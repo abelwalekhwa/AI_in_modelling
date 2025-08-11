@@ -11,8 +11,7 @@ library(mapview) # for interactive maps
 library(RColorBrewer) #color palette
 library(wesanderson)
 
-dat <- read_excel("~/OneDrive - University of Cambridge/R/AI in Modeling/data_11072025.xlsx")
-
+dat <- read_excel("OneDrive - University of Cambridge/IDEMU UNIT/AI in Modeling- Systematic review/data_11082025.xlsx")
 
 setwd("~/OneDrive - University of Cambridge/R/FMD_Meta-analysis/world-administrative-boundaries")
 
@@ -193,4 +192,110 @@ matched_countries <- intersect(dat_countries, worldMap_countries)
    coord_fixed(ratio = 0.75)
  ### Programming language
 
+ ##Risk of bias assessment
+ 
+ library(tibble)
+ library(dplyr)
+ library(gt)
+ 
+ data <- tribble(
+   ~study, ~year, ~`Design of the Mathematical Modeling Study`, ~`Description of the Model assumptions, tools and why they were used`, ~`Availability of the modelling code for replicability of their models`, ~`Process of developing the models; Engagement with relevant stakeholders`, ~`Quality of the data used for the models`, ~`Transparency/disclosure of study limitations`,
+   "Muleia 2021", 2021, "High", "High", "High", "Low", "Low", "High",
+   "Mfisimana 2022", 2022, "High", "High", "Low", "High", NA, NA,
+   "Mbah 2023", 2022, "High", "High", "Low", "Low", "Low", "Low",
+   "Kaba 2023", 2023, "High", "Low", "Low", "Unsure", "High", "Low",
+   "Mwasa 2011", 2011, "High", "High", "Low", "High", "Low", "High",
+   "Bhunu 2011", 2011, "High", "High", "Low", "Low", "Low", "Low",
+   "Nannyonga 2012", 2012, "High", "High", "Low", "High", "Low", "Low",
+   "Nguefack 2016", 2016, "High", "High", "Low", "High", "Low", "Low",
+   "Azeez 2016", 2016, "High", "High", "Low", "High", "Low", "Low",
+   "Kabaria 2016", 2016, "High", "High", "Low", "Low", "High", "Low",
+   "Mushanyu 2018", 2018, "High", "High", "Low", "Low", "Low", "Low",
+   "Okuonghae 2019", 2019, "High", "High", "Low", "Low", "Low", "Low",
+   "Kusel 2019", 2019, "High", "High", "Low", "Low", "Low", "Low",
+   "Sekamatte 2019", 2019, "High", "High", "Low", "Low", "Unsure", "Low",
+   "Nyabadza 2019", 2019, "High", "High", "Low", "High", "High", "High",
+   "Leo 2019", 2019, "High", "High", "Low", "Low", "Unsure", "High",
+   "Nkamba 2019", 2019, "High", "High", "High", "High", "Low", "Low",
+   "Daoudi 2020", 2020, "High", "Low", "Low", "Low", "Low", "Low",
+   "Ogola 2020", 2020, "High", "High", "Low", "High", "Unsure", "High",
+   "Mhlanga 2020", 2020, "High", "High", "Low", "Low", "High", "Low",
+   "Garba 2020", 2020, "High", "High", "Low", "High", "Low", "Low",
+   "Lambura 2020", 2020, "High", "High", "High", "Low", "High", "Low",
+   "Kwarteng 2021", 2021, "High", "Low", "Low", "Low", "High", "Low",
+   "Mduluza-Jokonya 2021", 2020, "High", "High", "Low", "High", "Low", "High",
+   "Wangari 2021", 2021, "High", "High", "High", "High", "High", "Low",
+   "Diouf 2022", 2022, "High", "Low", "Low", "Low", "High", "Low",
+   "Nishimwe 2022", 2022, "High", "Low", "Low", "Low", "Low", "Low",
+   "Kabaria 2016", 2016, "High", "Low", "Low", "High", "High", "Low",
+   "Omondi 2018", 2018, "High", "High", "Low", "High", "Low", "High",
+   "Omondi 2019", 2019, "High", "High", "Low", "High", "Low", "High",
+   "Ogana 2024", 2024, "High", "High", "Low", "High", "High", "High",
+   "Nannyonga 2020", 2020, "High", "High", "Low", "High", "High", "High",
+   "Nannyonga 2013", 2013, "High", "High", "Low", "Low", "Low", "Low",
+   "Nannyonga et al., 2011", 2011, "High", "High", "Low", "Low", "Low", "Low",
+   "Yaga et al 2025", 2025, "High", "High", "Low", "Low", "High", "Low",
+   "Yaga and Saporu, 2025", 2025, "High", "High", "Low", "High", "Low", "Low",
+   "Montcho 2024", 2024, "High", "High", "Low", "Low", "Low", "High",
+   "Olaniyi 2025", 2025, "High", "High", "Low", "High", "Low", "High",
+   "Gathungu 2024", 2024, "High", "High", "High", "Low", "Low", "Low",
+   "Aguegboh 2024", 2024, "High", "High", "Low", "Low", "Low", "Low")
+ 
+ # Filter for years 2016 to 2025, create Citation without year, and arrange by year
+ 
+ data <- data %>%
+   mutate(
+     Year = year,
+     Citation = sub(",? \\d{4}$", "", study)) %>%
+   filter(Year >= 2016 & Year <= 2025) %>%
+   arrange(Year) %>%
+   select(Year, Citation, `Design of the Mathematical Modeling Study`, 
+          `Description of the Model assumptions, tools and why they were used`, 
+          `Availability of the modelling code for replicability of their models`, 
+          `Process of developing the models; Engagement with relevant stakeholders`, 
+          `Quality of the data used for the models`, 
+          `Transparency/disclosure of study limitations`)
+ 
+ # Create the table with gt
+ 
+ table <- data %>%
+   gt() %>%
+   tab_header(title = "Risk of Bias Assessment for Mathematical Modeling Studies (2016-2025)") %>%
+   cols_label(
+     Year = "Year",
+     Citation = "Study Citation",
+     `Design of the Mathematical Modeling Study` = "Study Design",
+     `Description of the Model assumptions, tools and why they were used` = "Model Assumptions",
+     `Availability of the modelling code for replicability of their models` = "Code Availability",
+     `Process of developing the models; Engagement with relevant stakeholders` = "Stakeholder Engagement",
+     `Quality of the data used for the models` = "Data Quality",
+     `Transparency/disclosure of study limitations` = "Limitations Disclosure"
+   ) %>%
+   # Apply color coding for High (red), Low (green), and Unsure (yellow)
+   data_color(
+     columns = c(`Design of the Mathematical Modeling Study`, 
+                 `Description of the Model assumptions, tools and why they were used`, 
+                 `Availability of the modelling code for replicability of their models`, 
+                 `Process of developing the models; Engagement with relevant stakeholders`, 
+                 `Quality of the data used for the models`, 
+                 `Transparency/disclosure of study limitations`),
+     colors = scales::col_factor(
+       palette = c("High" = "#FF9999", "Low" = "#99FF99", "Unsure" = "#FFFF99"),
+       domain = c("High", "Low", "Unsure")
+     )) %>%
+  
+    # Adding a legend as a footnote
+   
+   tab_footnote(
+     footnote = "Color Legend: High Risk = Red, Low Risk = Green, Unsure = Yellow",
+     locations = cells_title(groups = "title")) %>%
+   
+   # Improving table aesthetics
+   tab_options(
+     table.font.size = 12,
+     column_labels.font.weight = "bold",
+     table.align = "center",
+     table.width = pct(100))
+ 
+ table
  
